@@ -1,0 +1,7 @@
+- if overload baterije u minimum, gasi bojler
+- if overload baterije u maximum, prodaj struju ako je povoljno inače pali bojler
+- if 30% bojlera skuplje od 0.1, gasi bojler inače upali
+- if nema mrežne struje, gasi bojler
+- if baterija ispod X kWh, gasi bojler
+- ako je penal bojlera manji od prodajne cene, gasi bojler i prodaj višak ili puni bateriju
+- ako puno raste PV, biće puno energije
