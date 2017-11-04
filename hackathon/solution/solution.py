@@ -111,8 +111,7 @@ def potrosiIliProdaj(msg):
             else:
                 if msg.buying_price / 60 >= 0.1: # više se isplati gasiti load3 nego kupovati
                     load_three = False
-                else: # vie se isplati kupovati struju nego gasiti load3
-                    pass
+
         elif msg.bessSOC >0.6: # baterija je jebeno puna
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
