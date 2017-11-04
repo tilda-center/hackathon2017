@@ -102,50 +102,7 @@ def potrosiIliProdaj(msg):
 
     extra_production = msg.solar_production - msg.current_load
     if msg.grid_status: # radi elektrovojvodina
-        if msg.bessSOC < battery_threshold: # baterija je ispod threshold
-            if extra_production > 0: # panel može da puni bateriju
-                if extra_production > 6.0: # panel daje više nego što baterija može da primi
-                    power_reference = -6.0
-                else: # panel daje najviše onoliko koliko baterija može da primi
-                    power_reference = -extra_production
-            else:
-                if msg.buying_price / 60 >= 0.1: # više se isplati gasiti load3 nego kupovati
-                    load_three = False
-
-        elif msg.bessSOC >0.6: # baterija je jebeno puna
-            if extra_production > 0: # panel može da puni bateriju
-                if extra_production > 6.0: # panel daje više nego što baterija može da primi
-                    power_reference = -6.0
-                else: # panel daje najviše onoliko koliko baterija može da primi
-                    power_reference = -extra_production
-            else: # panel nema dovoljno energije da zadovolji load
-                if msg.buying_price / 60 >= 0.1: #struja je skupa
-                    load_three = False
-                    current_load = msg.current_load * 0.7
-                    new_extra_production = msg.solar_production - current_load
-                    if new_extra_production < -6.0 :
-                        power_reference = 6.0 #ostalo kupuje iz elektrane
-                    else:
-                        power_reference = -new_extra_production #napaja ga samo baterija
-
-                else:#jeftina je struja i vucemo iz elektrane
-                    new_extra_production = msg.solar_production - msg.current_load
-                    if new_extra_production < -6.0 :
-                        power_reference = 6.0 #ostalo kupuje iz elektrane
-                    else:
-                        power_reference = -new_extra_production #napaja ga samo baterija
-        else:
-            if extra_production > 0: # panel može da puni bateriju
-                if extra_production > 6.0: # panel daje više nego što baterija može da primi
-                    power_reference = -6.0
-                else: # panel daje najviše onoliko koliko baterija može da primi
-                    power_reference = -extra_production
-            else: # panel nema dovoljno energije da zadovolji load
-                if msg.buying_price / 60 >= 0.1: #struja je skupa
-                    load_three = False
-
-                else:#jeftina je struja i vucemo iz elektrane
-                    pass
+        #????????????????????????????????????????????????????????????????????
 
     else: # ne radi elektrovojvodina
         all_energy = msg.solar_production + 6.0
