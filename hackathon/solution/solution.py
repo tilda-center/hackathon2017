@@ -6,7 +6,7 @@ from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
 from hackathon.framework.http_server import prepare_dot_dir
 
 
-def prodaj(msg):
+def potrosi(msg):
     load_one = True
     load_two = True
     load_three = True
@@ -63,7 +63,7 @@ def worker(msg: DataMessage) -> ResultsMessage:
     if msg.bessOverload:
         # maximum
         if msg.bessSOC == 1:
-            result = prodaj(msg)
+            result = potrosi(msg)
         else:
             result = stedi(msg)
     elif not msg.grid_status:
