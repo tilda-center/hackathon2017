@@ -100,14 +100,13 @@ def potrosiIliProdaj(msg):
 
     extra_production = msg.solar_production - msg.current_load
     if msg.grid_status: # radi elektrovojvodina
-        if msg.bessSOC < 0.1: # baterija je kritično prazna
+        if msg.bessSOC < 0.4: # baterija je kritično prazna
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
                     power_reference = -6.0
                 else: # panel daje najviše onoliko koliko baterija može da primi
                     power_reference = -extra_production
             else:
-                # jel jeftinije gasiti load ili puniti iz elektrovojvodine
                 if msg.buying_price / 60 >= 0.1: # više se isplati gasiti load3 nego kupovati
                     load_three = False
                     current_load = msg.current_load * 0.7
@@ -119,6 +118,16 @@ def potrosiIliProdaj(msg):
                             power_reference = -new_extra_production
                     else: # sa isključenim load3 nema dovoljno struje
                         power_reference = -6.0 / msg.buying_price
+                else: # vie se isplati kupovati struju nego gasiti load3
+                    power_reference = -6.0 / msg.buying_price
+        else: # baterija nije kritično prazna
+            if extra_production > 0: # panel može da puni bateriju
+                if extra_production > 6.0: # panel daje više nego što baterija može da primi
+                    power_reference = -6.0
+                else: # panel daje najviše onoliko koliko baterija može da primi
+                    power_reference = -extra_production
+            else: # panel nema dovoljno energije da zadovolji load
+                pass
     else: # ne radi elektrovojvodina
         pass
     result = ResultsMessage(
