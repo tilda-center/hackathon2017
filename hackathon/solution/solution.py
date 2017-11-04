@@ -11,10 +11,14 @@ def worker(msg: DataMessage) -> ResultsMessage:
     # Details about DataMessage and ResultsMessage objects can be found in /utils/utils.py
 
     # Dummy result is returned in every cycle here
+    load_one = True
+    load_two = True
+    load_three = True
+    import ipdb; ipdb.set_trace()
     return ResultsMessage(data_msg=msg,
-                          load_one=True,
-                          load_two=True,
-                          load_three=True,
+                          load_one=load_one,
+                          load_two=load_two,
+                          load_three=load_three,
                           power_reference=0.0,
                           pv_mode=PVMode.ON)
 
