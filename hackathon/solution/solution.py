@@ -6,7 +6,8 @@ from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
 from hackathon.framework.http_server import prepare_dot_dir
 
 
-battery_threshold = 0.8
+max_battery_threshold = 0.8
+min_battery_threshold = 0.4
 
 def potrosi(msg):
     load_one = True
@@ -102,7 +103,9 @@ def potrosiIliProdaj(msg):
 
     extra_production = msg.solar_production - msg.current_load
     if msg.grid_status: # radi elektrovojvodina
-        if msg.bessSOC < battery_threshold: # baterija je ispod threshold
+        if msg.bessSOC < min_battery_threshold: #posto imamo mrezu, stedimo bateriju maksimalno
+            stedi(msg)
+        elif msg.bessSOC < max_battery_threshold: # baterija je ispod threshold
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
                     power_reference = -6.0
@@ -119,9 +122,9 @@ def potrosiIliProdaj(msg):
                         else: # višak struje ide u bateriju
                             power_reference = -new_extra_production
                     else: # sa isključenim load3 nema dovoljno struje
-                        power_reference = -6.0 / msg.buying_price
+                        pass #uzimaj iz elektrovojvodine
                 else: # vie se isplati kupovati struju nego gasiti load3
-                    power_reference = -6.0 / msg.buying_price
+                    power_reference = 6.0 + extra_production
         else: # baterija nije kritično prazna
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
