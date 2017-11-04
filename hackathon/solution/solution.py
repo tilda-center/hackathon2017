@@ -26,7 +26,7 @@ def potrosi(msg):
                 else:
                     power_reference = -extra_production
         else: # pravim barem energije od max load
-            power_reference = 0.000001
+            power_reference = 0.1
     else: # ne radi elektrovojvodina
         if extra_production >= 0: # pravim iz panela barem max load
             pv_mode = PVMode.OFF
@@ -41,7 +41,6 @@ def potrosi(msg):
                     load_two = False # tloken
                 else: # panel i baterija prave barem load1 + load2
                     load_three = False
-
 
     result = ResultsMessage(
         data_msg=msg,
@@ -60,6 +59,27 @@ def stedi(msg):
     load_three = True
     power_reference = 0.0
     pv_mode = PVMode.ON
+
+    extra_production = msg.solar_production - msg.current_load
+    if msg.grid_status: # radi elektrovojvodina
+        if msg.buying_price / 60 > 0.1: # više se isplati gasiti load3 nego puniti iz elektrovojvodine
+            load_three = False
+            power_reference = -0.1
+    else: # ne radi elektrovojvodina
+        if extra_production <= 0: # nema dovoljno sunca
+            if msg.current_load * 0.2 > msg.solar_production: # čak i sa samo load1 trošimo previše pa isključi sve
+                load_one = False
+                load_two = False
+                load_three = False
+            elif msg.current_load * 0.5 > msg.solar_production: # isključenjem load2 trošimo previše
+                load_two = False
+                load_three = False
+            elif msg.current_load * 0.7 < msg.solar_production: # dovoljno je isključiti samo load3
+                load_three = False
+            else: # dovoljno je isključiti samo load2
+                load_two = False
+
+
     result = ResultsMessage(
         data_msg=msg,
         load_one=load_one,
