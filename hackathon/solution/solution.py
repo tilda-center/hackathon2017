@@ -6,7 +6,7 @@ from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
 from hackathon.framework.http_server import prepare_dot_dir
 
 
-battery_threshold = 0.8
+battery_threshold = 0.4
 
 def potrosi(msg):
     load_one = True
@@ -111,18 +111,9 @@ def potrosiIliProdaj(msg):
             else:
                 if msg.buying_price / 60 >= 0.1: # više se isplati gasiti load3 nego kupovati
                     load_three = False
-                    current_load = msg.current_load * 0.7
-                    new_extra_production = msg.solar_production - current_load
-                    if new_extra_production > 0: # sa isključenim load3 ima dosta struje
-                        if new_extra_production > 6.0: # višak struje je veći nego što baterija može da primi
-                            power_reference = -6.0
-                        else: # višak struje ide u bateriju
-                            power_reference = -new_extra_production
-                    else: # sa isključenim load3 nema dovoljno struje
-                        power_reference = -6.0 / msg.buying_price
                 else: # vie se isplati kupovati struju nego gasiti load3
-                    power_reference = -6.0 / msg.buying_price
-        else: # baterija nije kritično prazna
+                    pass
+        elif msg.bessSOC >0.6: # baterija je jebeno puna
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
                     power_reference = -6.0
@@ -144,6 +135,18 @@ def potrosiIliProdaj(msg):
                         power_reference = 6.0 #ostalo kupuje iz elektrane
                     else:
                         power_reference = -new_extra_production #napaja ga samo baterija
+        else:
+            if extra_production > 0: # panel može da puni bateriju
+                if extra_production > 6.0: # panel daje više nego što baterija može da primi
+                    power_reference = -6.0
+                else: # panel daje najviše onoliko koliko baterija može da primi
+                    power_reference = -extra_production
+            else: # panel nema dovoljno energije da zadovolji load
+                if msg.buying_price / 60 >= 0.1: #struja je skupa
+                    load_three = False
+
+                else:#jeftina je struja i vucemo iz elektrane
+                    pass
 
     else: # ne radi elektrovojvodina
         all_energy = msg.solar_production + 6.0
