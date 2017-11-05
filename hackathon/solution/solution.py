@@ -94,15 +94,12 @@ def guess_blackouts_blind(msg):
         min_battery_threshold = 0.5
         max_battery_threshold = 0.6
         blackout_end_iteration = msg.id
-        print('blackout')
     elif blackout_end_iteration < msg.id and msg.id < blackout_end_iteration + 8 * 60:
         min_battery_threshold = 0.0
         max_battery_threshold = 0.1
-        print('after blackout')
     else:
         min_battery_threshold = 0.1
         max_battery_threshold = 0.6
-        print('normal')
 
 
 
@@ -148,36 +145,36 @@ LOAD_SCALES = None
 SOLAR_SCALES = None
 BLACKOUTS = None
 
-#  try:
-    #  with open('generate_profiles.py', 'r') as data_file:
-        #  line_number = 0
-        #  min_line = 11
-        #  max_line = 19
-        #  with open('raw_data.py', 'w+') as result_file:
-            #  begining = False
-            #  end = False
-            #  for raw_line in data_file:
-                #  line = raw_line[4:]
-                #  if line.startswith('LOAD_SCALES'):
-                    #  begining = True
-                #  if line.startswith('PROFILE'):
-                    #  end = True
-                #  if end:
-                    #  break
-                #  if begining:
-                    #  result_file.write(line)
+try:
+    with open('generate_profiles.py', 'r') as data_file:
+        line_number = 0
+        min_line = 11
+        max_line = 19
+        with open('raw_data.py', 'w+') as result_file:
+            begining = False
+            end = False
+            for raw_line in data_file:
+                line = raw_line[4:]
+                if line.startswith('LOAD_SCALES'):
+                    begining = True
+                if line.startswith('PROFILE'):
+                    end = True
+                if end:
+                    break
+                if begining:
+                    result_file.write(line)
 
 
-    #  import raw_data
+    import raw_data
 
-    #  LOAD_SCALES = raw_data.LOAD_SCALES
-    #  SOLAR_SCALES = raw_data.SOLAR_SCALES
-    #  BLACKOUTS = raw_data.BLACKOUTS
+    LOAD_SCALES = raw_data.LOAD_SCALES
+    SOLAR_SCALES = raw_data.SOLAR_SCALES
+    BLACKOUTS = raw_data.BLACKOUTS
 
-    #  import os
-    #  os.remove('raw_data.py'); os.remove('raw_data.pyc')
-#  except:
-    #  pass
+    import os
+    os.remove('raw_data.py'); os.remove('raw_data.pyc')
+except:
+    pass
 
 
 def potrosiIliProdaj(msg):
