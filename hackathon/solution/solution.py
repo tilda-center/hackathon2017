@@ -6,8 +6,8 @@ from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
 from hackathon.framework.http_server import prepare_dot_dir
 
 
-max_battery_threshold = 0.8
-min_battery_threshold = 0.43333
+min_battery_threshold = 0.1
+max_battery_threshold = min_battery_threshold
 
 
 def potrosi(msg):
@@ -55,6 +55,30 @@ def potrosi(msg):
         pv_mode=pv_mode,
     )
     return result
+
+
+def guess_blackouts(msg):
+    global LOAD_SCALES
+    global SOLAR_SCALES
+    global BLACKOUTS
+    global min_battery_threshold
+    global max_battery_threshold
+
+    day_iterator = 0
+    for day in BLACKOUTS:
+        if len(day) > 0:
+            blackout_start_time = day[0][0]
+            blackout_end_time = day[0][1]
+            blackout_start_iteration = int(24 * 60 * day_iterator + 60 * blackout_start_time)
+            blackout_end_iteration = int(24 * 60 * day_iterator + 60 * blackout_end_time)
+            if blackout_start_iteration - 100 < msg.id and msg.id <= blackout_end_iteration:
+                print(msg.id, blackout_start_iteration, blackout_end_iteration)
+                min_battery_threshold = 0.43333
+                max_battery_threshold = 0.8
+            else:
+                min_battery_threshold = 0.1
+                max_battery_threshold = 0.6
+        day_iterator += 1
 
 
 def stedi(msg):
@@ -164,7 +188,7 @@ def potrosiIliProdaj(msg):
                             power_reference = -new_extra_production
                 else: # više se isplati kupovati struju nego gasiti load3
                     if msg.buying_price == 3:
-                        power_reference = -6.0
+                        power_reference = -3.0
         else: # baterija nije kritično prazna
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
@@ -212,8 +236,10 @@ def potrosiIliProdaj(msg):
     return result
 
 
+
 def worker(msg: DataMessage) -> ResultsMessage:
     result = None
+    guess_blackouts(msg)
     # overload baterije
     if msg.bessOverload:
         # maximum
