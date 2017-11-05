@@ -77,8 +77,12 @@ def guess_blackouts(msg):
             min_battery_threshold = 0.7
             max_battery_threshold = 0.9
         elif blackout_end_iteration < msg.id and msg.id < blackout_end_iteration + 8 * 60:
-            min_battery_threshold = 0.0
-            max_battery_threshold = 0.1
+            if msg.selling_price == 0:
+                min_battery_threshold = 0.7
+                max_battery_threshold = 0.9
+            else:
+                min_battery_threshold = 0.0
+                max_battery_threshold = 0.1
         elif next_flare_iteration - 60 * 4 < msg.id and msg.id < next_flare_iteration:
             solar_scale = SOLAR_SCALES[day_iterator]
             if solar_scale < 0.6:
