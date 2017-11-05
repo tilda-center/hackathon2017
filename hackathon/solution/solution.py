@@ -6,8 +6,8 @@ from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
 from hackathon.framework.http_server import prepare_dot_dir
 
 
-min_battery_threshold = 0.5
-max_battery_threshold = 0.7
+min_battery_threshold = 0.3
+max_battery_threshold = 0.5
 blackout_end_iteration = 8000
 
 
@@ -76,7 +76,7 @@ def guess_blackouts(msg):
         max_battery_threshold = 0.1
     else:
         min_battery_threshold = 0.1
-        max_battery_threshold = 0.6
+        max_battery_threshold = 0.5
 
 
 def stedi(msg):
