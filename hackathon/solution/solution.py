@@ -73,7 +73,7 @@ def guess_blackouts(msg):
             blackout_end_iteration = int(24 * 60 * day_iterator + 60 * blackout_end_time)
             if blackout_start_iteration - 100 < msg.id and msg.id <= blackout_end_iteration:
                 print(msg.id, blackout_start_iteration, blackout_end_iteration)
-                min_battery_threshold = 0.43333
+                min_battery_threshold = 0.5
                 max_battery_threshold = 0.8
             else:
                 min_battery_threshold = 0.1
@@ -167,9 +167,9 @@ def potrosiIliProdaj(msg):
         if msg.bessSOC < min_battery_threshold: #posto imamo mrezu, stedimo bateriju maksimalno
             if msg.buying_price / 60.0 > 0.1: #skupa struja, gasi load3
                 load_three = False
-                power_reference = -1.0 #baterija se mora napuniti za kad nestane struje
+                #  power_reference = -1.0 #baterija se mora napuniti za kad nestane struje
             else:
-                power_reference = -6.0 #struja je jeftina pa maksimalno punimo bateriju
+                power_reference = -3.0 #struja je jeftina pa maksimalno punimo bateriju
         elif msg.bessSOC < max_battery_threshold: # baterija je ispod threshold
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
@@ -187,7 +187,7 @@ def potrosiIliProdaj(msg):
                         else: # višak struje ide u bateriju
                             power_reference = -new_extra_production
                 else: # više se isplati kupovati struju nego gasiti load3
-                    if msg.buying_price == 3:
+                    if msg.buying_price / 60 < 0.1:
                         power_reference = -3.0
         else: # baterija nije kritično prazna
             if extra_production > 0: # panel može da puni bateriju
