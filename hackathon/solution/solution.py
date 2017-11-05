@@ -129,6 +129,7 @@ def potrosiIliProdaj(msg):
         if msg.bessSOC < min_battery_threshold: #posto imamo mrezu, stedimo bateriju maksimalno
             if msg.buying_price / 60.0 > 0.1: #skupa struja, gasi load3
                 load_three = False
+                power_reference = -1.0
             else:
                 power_reference = -3.0 #struja je jeftina pa maksimalno punimo bateriju
         elif msg.bessSOC < max_battery_threshold: # baterija je ispod threshold
@@ -143,7 +144,7 @@ def potrosiIliProdaj(msg):
                     current_load = msg.current_load * 0.7
                     new_extra_production = msg.solar_production - current_load
                     if new_extra_production > 0: # sa isključenim load3 ima dosta struje
-                        power_reference = -1.0
+                        power_reference = -extra_production
                 else: # više se isplati kupovati struju nego gasiti load3
                     if msg.buying_price / 60 < 0.1:
                         power_reference = -1.0
