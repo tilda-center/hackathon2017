@@ -7,7 +7,7 @@ from hackathon.framework.http_server import prepare_dot_dir
 
 
 max_battery_threshold = 0.8
-min_battery_threshold = 0.5
+min_battery_threshold = 0.43333
 
 
 def potrosi(msg):
@@ -162,10 +162,9 @@ def potrosiIliProdaj(msg):
                             power_reference = -6.0
                         else: # višak struje ide u bateriju
                             power_reference = -new_extra_production
-                    else: # sa isključenim load3 nema dovoljno struje
-                        power_reference = -new_extra_production
-                else: # vie se isplati kupovati struju nego gasiti load3
-                    pass
+                else: # više se isplati kupovati struju nego gasiti load3
+                    if msg.buying_price == 3:
+                        power_reference = -6.0
         else: # baterija nije kritično prazna
             if extra_production > 0: # panel može da puni bateriju
                 if extra_production > 6.0: # panel daje više nego što baterija može da primi
