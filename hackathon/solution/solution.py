@@ -74,12 +74,12 @@ def guess_blackouts(msg):
         blackout_start_iteration = int(24 * 60 * day_iterator + 60 * blackout_start_time)
         blackout_end_iteration = int(24 * 60 * day_iterator + 60 * blackout_end_time)
         if blackout_start_iteration - 100 < msg.id and msg.id <= blackout_end_iteration:
-            min_battery_threshold = 0.5
-            max_battery_threshold = 0.6
+            min_battery_threshold = 0.7
+            max_battery_threshold = 0.9
         elif blackout_end_iteration < msg.id and msg.id < blackout_end_iteration + 8 * 60:
             min_battery_threshold = 0.0
             max_battery_threshold = 0.1
-        elif next_flare_iteration - 60 * 5 < msg.id and msg.id < next_flare_iteration:
+        elif next_flare_iteration - 60 * 4 < msg.id and msg.id < next_flare_iteration:
             solar_scale = SOLAR_SCALES[day_iterator]
             if solar_scale < 0.6:
                 min_battery_threshold = 0.5
@@ -90,9 +90,12 @@ def guess_blackouts(msg):
         elif msg.id < 7200 - 80:
             min_battery_threshold = 0.0
             max_battery_threshold = 0.1
+        elif msg.selling_price == 0:
+            min_battery_threshold = 0.7
+            max_battery_threshold = 0.9
         else:
-            min_battery_threshold = 0.1
-            max_battery_threshold = 0.6
+            min_battery_threshold = 0.5
+            max_battery_threshold = 0.7
 
 
 def guess_blackouts_blind(msg):
